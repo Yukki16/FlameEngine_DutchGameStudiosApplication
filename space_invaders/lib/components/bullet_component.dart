@@ -1,5 +1,7 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:space_invaders/components/bullet_pool.dart';
+import 'package:space_invaders/components/enemy_component.dart';
 
 class BulletComponent extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks{
   
@@ -26,5 +28,16 @@ class BulletComponent extends SpriteAnimationComponent with HasGameRef, Collisio
   {
     position = _position;
     direction = _direction;
+  }
+
+  @override
+  void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other) 
+  {
+    super.onCollisionStart(intersectionPoints, other);
+    if (other is EnemyComponent) {
+      other.takeHit();
+      BulletPool.intance.releaseBullet(this);
+      game.remove(this);
+    }
   }
 }

@@ -1,16 +1,14 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:space_invaders/components/enemy_spawner.dart';
 import 'package:space_invaders/components/player_component.dart';
 
-class SpaceInvadersGame extends FlameGame with KeyboardEvents, PanDetector
+class SpaceInvadersGame extends FlameGame with KeyboardEvents, PanDetector, HasCollisionDetection
 {
   late PlayerComponent player;
   late EnemySpawner spawner;

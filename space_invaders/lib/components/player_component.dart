@@ -10,7 +10,7 @@ class PlayerComponent extends SpriteComponent with HasGameRef, CollisionCallback
   
   final double speed = 200.0; //Player speed
 
-  late BulletPool _bulletPool; //Pool design pattern to reuse bullets
+  //late BulletPool _bulletPool; //Pool design pattern to reuse bullets
   late TimerComponent bulletCreator;
 
   Vector2 direction = Vector2.zero(); //Vector to modify direction of movement
@@ -21,8 +21,8 @@ class PlayerComponent extends SpriteComponent with HasGameRef, CollisionCallback
 
   @override
   Future<void> onLoad() async {
-    
-    _bulletPool = BulletPool(5);
+
+    //_bulletPool = BulletPool(5);
 
     final spriteSheet = await gameRef.images.load('spaceShip.png');
     idleSprite = Sprite(spriteSheet, srcSize: Vector2(8,8), srcPosition: Vector2(0, 0));
@@ -40,7 +40,7 @@ class PlayerComponent extends SpriteComponent with HasGameRef, CollisionCallback
 
   void shootBullet()
   {
-    final bullet = _bulletPool.getBullet(position, Vector2(0, -1));
+    final bullet = BulletPool.intance.getBullet(position, Vector2(0, -1));
     game.add(bullet);
   }
 
@@ -61,7 +61,7 @@ class PlayerComponent extends SpriteComponent with HasGameRef, CollisionCallback
     position += direction * dt * speed; 
     for (final bullet in game.children.whereType<BulletComponent>().toList()) {
       if (bullet.position.y < 0 || bullet.position.y > game.size.y) {
-        _bulletPool.releaseBullet(bullet);
+        BulletPool.intance.releaseBullet(bullet);
         game.remove(bullet);
       }
     }

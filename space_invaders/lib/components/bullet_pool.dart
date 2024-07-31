@@ -1,7 +1,16 @@
 import 'package:flame/components.dart';
 import 'package:space_invaders/components/bullet_component.dart';
 
+///
+/// Pool design pattern combined with Singleton desing pattern for easier access to the pool.
+/// Singleton design choise made for easier access for the bullet hitting the enemy to be released.
+///
 class BulletPool {
+
+  static final BulletPool _instance = BulletPool(5);
+
+  static BulletPool get intance => _instance;
+
   final List<BulletComponent> _available = [];
   final List<BulletComponent> _inUse = [];
 
