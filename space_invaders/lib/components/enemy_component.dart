@@ -1,10 +1,12 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flame/camera.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/particles.dart';
+import 'package:flame/rendering.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:space_invaders/components/enemy_spawner.dart';
@@ -25,8 +27,19 @@ class EnemyComponent extends SpriteAnimationComponent with HasGameRef, Collision
   Future<void> onLoad() async{
     animation = await game.loadSpriteAnimation('enemy.png', SpriteAnimationData.sequenced(amount: 2, stepTime: 0.25, textureSize: Vector2(8,8)));
     size = Vector2(32, 32);
+
+    decorator.addLast(PaintDecorator.tint(getRandomColor())); //Decorator added to have enemies of different colors
+                                                              //None of the sprites I used has a transparent background :/. so the decorator applies to the black background
+                                                              //they have too as you can see 
+    
+    //animation?.addDecorator(decorator);
     add(CircleHitbox());
   }
+
+  Color getRandomColor() {
+  final Random random = Random();
+  return Color.fromARGB(125, random.nextInt(256),  random.nextInt(256), random.nextInt(256));
+}
 
   @override
   void update(double dt) {

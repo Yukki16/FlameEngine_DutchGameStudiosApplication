@@ -17,6 +17,7 @@ class SpaceInvadersGame extends FlameGame with KeyboardEvents, PanDetector, HasC
   Future<void> onLoad() async 
   {
     await FlameAudio.audioCache.loadAll(['backgroundMusic/SI_original_st.wav','SFX/explosion.wav']);
+    FlameAudio.bgm.initialize();
     await FlameAudio.bgm.play('backgroundMusic/SI_original_st.wav', volume: 0.15);
     add(player = PlayerComponent());
     add(spawner = EnemySpawner());
