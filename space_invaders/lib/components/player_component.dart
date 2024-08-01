@@ -1,22 +1,30 @@
 import 'dart:async';
+import 'dart:js_interop';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:space_invaders/bloc/game_bloc.dart';
 import 'package:space_invaders/components/bullet_component.dart';
 import 'package:space_invaders/components/bullet_pool.dart';
 import 'package:space_invaders/components/enemy_component.dart';
+import 'package:space_invaders/space_invaders_game.dart';
 
 class PlayerComponent extends SpriteComponent with HasGameRef, CollisionCallbacks, KeyboardHandler{
-  
+
   final double speed = 200.0; //Player speed
 
   //late BulletPool _bulletPool; //Pool design pattern to reuse bullets
   late TimerComponent bulletCreator;
 
   Vector2 direction = Vector2.zero(); //Vector to modify direction of movement
+
+  late GameBloc gameBloc;
+
+  PlayerComponent({required this.gameBloc}) : super();
 
   late Sprite idleSprite;
   late Sprite movingLeftSprite;
@@ -113,6 +121,11 @@ class PlayerComponent extends SpriteComponent with HasGameRef, CollisionCallback
     {
       other.takeHit();
       addHitEffect();
+      gameBloc.add(LoseALifeEvent());
+      if(gameBloc.nrOfLifes <= 0)
+      {
+        gameBloc.add(EndGameEvent("You lost"));
+      }
     }
   }
 

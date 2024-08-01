@@ -43,7 +43,6 @@ class EnemyComponent extends SpriteAnimationComponent with HasGameRef, Collision
 
   @override
   void update(double dt) {
-    // TODO: implement update
     super.update(dt);
     movingStrategy.move(this, speed, dt);
     if(position.y > game.size.y)
