@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:space_invaders/components/bullet_component.dart';
 import 'package:space_invaders/components/bullet_pool.dart';
+import 'package:space_invaders/components/enemy_component.dart';
 
 class PlayerComponent extends SpriteComponent with HasGameRef, CollisionCallbacks, KeyboardHandler{
   
@@ -100,5 +103,22 @@ class PlayerComponent extends SpriteComponent with HasGameRef, CollisionCallback
     }
     position.x = position.x.clamp(0, game.size.x - size.x);
     return true;
+  }
+
+  @override
+  void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other) {
+    // TODO: implement onCollisionStart
+    super.onCollisionStart(intersectionPoints, other);
+    if(other is EnemyComponent)
+    {
+      other.takeHit();
+      addHitEffect();
+    }
+  }
+
+  void addHitEffect()
+  {
+    final colorEffect = ColorEffect(Colors.red, EffectController(duration: 0.1, reverseDuration: 0.1, repeatCount: 3));
+    add(colorEffect);
   }
 }
