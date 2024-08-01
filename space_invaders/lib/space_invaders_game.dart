@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:space_invaders/components/enemy_spawner.dart';
@@ -15,8 +16,11 @@ class SpaceInvadersGame extends FlameGame with KeyboardEvents, PanDetector, HasC
   @override
   Future<void> onLoad() async 
   {
+    await FlameAudio.audioCache.loadAll(['backgroundMusic/SI_original_st.wav','SFX/explosion.wav']);
+    await FlameAudio.bgm.play('backgroundMusic/SI_original_st.wav', volume: 0.15);
     add(player = PlayerComponent());
     add(spawner = EnemySpawner());
+    //FlameAudio.bgm.initialize();
   }
 
   @override

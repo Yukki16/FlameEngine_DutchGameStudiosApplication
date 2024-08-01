@@ -22,7 +22,7 @@ class EnemySpawner extends TimerComponent with HasGameRef, KeyboardHandler {
     (
       _movingStrategy == MovingStrategy.wavy?WavyMovemnt():
       (random.nextBool()?LinearMovement():WavyMovemnt()))
-    ), position: Vector2((game.size.x / numberOfEnemies) * index, 0))));
+    ), position: Vector2(random.nextDouble() * game.size.x, 0))));
   }
 
   @override

@@ -9,6 +9,7 @@ environment:
 dependencies:
   bloc: ^8.1.4
   flame: ^1.18.0
+  flame_audio: ^2.10.2
   flutter:
     sdk: flutter
 
@@ -21,3 +22,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/audio/backgroundMusic/SI_original_st.wav
+    - assets/audio/SFX/explosion.wav

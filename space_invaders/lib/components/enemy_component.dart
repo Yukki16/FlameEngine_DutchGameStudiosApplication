@@ -5,6 +5,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/particles.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:space_invaders/components/enemy_spawner.dart';
 
@@ -48,6 +49,7 @@ class EnemyComponent extends SpriteAnimationComponent with HasGameRef, Collision
                                     speed: randomVector2(), lifespan: 0.5,
                                     child: CircleParticle(radius: 3, paint: Paint()..color = Colors.red)))));
     
+    FlameAudio.play('SFX/explosion.wav', volume: 0.15);
     removeFromParent();
     //game.increaseScore();
   }
