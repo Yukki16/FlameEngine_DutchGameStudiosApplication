@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/services.dart';
+import 'package:space_invaders/bloc/game_bloc.dart';
 import 'package:space_invaders/components/enemy_component.dart';
 
 class EnemySpawner extends TimerComponent with HasGameRef, KeyboardHandler {
@@ -10,7 +11,8 @@ class EnemySpawner extends TimerComponent with HasGameRef, KeyboardHandler {
 
   MovingStrategy _movingStrategy = MovingStrategy.linear;
 
-  EnemySpawner() : super(period: 2, repeat: true);
+  late GameBloc gameBloc;
+  EnemySpawner({required this.gameBloc}) : super(period: 2, repeat: true);
 
   Random random = Random();
   @override
@@ -22,7 +24,9 @@ class EnemySpawner extends TimerComponent with HasGameRef, KeyboardHandler {
     (
       _movingStrategy == MovingStrategy.wavy?WavyMovemnt():
       (random.nextBool()?LinearMovement():WavyMovemnt()))
-    ), position: Vector2(random.nextDouble() * game.size.x, 0))));
+    ), 
+    position: Vector2(random.nextDouble() * game.size.x, 0),
+    gameBloc: gameBloc)));
   }
 
   @override

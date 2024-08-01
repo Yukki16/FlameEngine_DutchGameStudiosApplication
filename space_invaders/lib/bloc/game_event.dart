@@ -6,7 +6,6 @@ abstract class GameEvent extends Equatable{
 }
 
 class StartGameEvent extends GameEvent{
-
 }
 
 class RestartGameEvent extends GameEvent{
@@ -20,5 +19,9 @@ class EndGameEvent extends GameEvent{
 }
 
 class LoseALifeEvent extends GameEvent{
+  
+}
 
+class KilledAnEnemyEvent extends GameEvent{
+  
 }

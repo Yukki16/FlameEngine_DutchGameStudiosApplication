@@ -9,6 +9,7 @@ import 'package:flame/particles.dart';
 import 'package:flame/rendering.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
+import 'package:space_invaders/bloc/game_bloc.dart';
 import 'package:space_invaders/components/enemy_spawner.dart';
 
 class EnemyComponent extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks{
@@ -18,7 +19,8 @@ class EnemyComponent extends SpriteAnimationComponent with HasGameRef, Collision
 
  late EnemyMovingStrategy movingStrategy;
 
-  EnemyComponent({required EnemyMovingStrategy movingStrategy, required super.position})
+  late GameBloc gameBloc;
+  EnemyComponent({required EnemyMovingStrategy movingStrategy, required super.position, required this.gameBloc})
   {
     this.movingStrategy = movingStrategy;
   }
@@ -62,7 +64,11 @@ class EnemyComponent extends SpriteAnimationComponent with HasGameRef, Collision
                                     child: CircleParticle(radius: 3, paint: Paint()..color = Colors.red)))));
     
     FlameAudio.play('SFX/explosion.wav', volume: 0.15);
+    gameBloc.add(KilledAnEnemyEvent());
+    if(gameBloc.state.numberOfEnemiesKilled >= 10)
+    {
+      gameBloc.add(EndGameEvent("You win!"));
+    }
     removeFromParent();
-    //game.increaseScore();
   }
 }

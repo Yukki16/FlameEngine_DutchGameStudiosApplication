@@ -11,9 +11,15 @@ class GameBloc extends Bloc<GameEvent, GameState>
     on<EndGameEvent>(_onGameOver);
     on<RestartGameEvent>(_onGameRestarted);
     on<LoseALifeEvent>(_onLoseALife);
+    on<KilledAnEnemyEvent>(_onEnemyKilled);
   }
 
   int nrOfLifes = 3;
+
+  void _onEnemyKilled(KilledAnEnemyEvent _, Emitter emit)
+  {
+    emit(state.copyWith(numberOfEnemiesKilled: state.numberOfEnemiesKilled + 1));
+  }
 
   void _onStartOfGame(StartGameEvent _, Emitter emit)
   {
