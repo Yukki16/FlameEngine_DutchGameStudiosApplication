@@ -1,17 +1,14 @@
 import 'dart:async';
-import 'dart:js_interop';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:space_invaders/bloc/game_bloc.dart';
-import 'package:space_invaders/components/bullet_component.dart';
 import 'package:space_invaders/components/bullet_pool.dart';
 import 'package:space_invaders/components/enemy_component.dart';
-import 'package:space_invaders/space_invaders_game.dart';
+import 'package:space_invaders/components/player_states.dart';
 
 class PlayerComponent extends SpriteComponent with HasGameRef, CollisionCallbacks, KeyboardHandler{
 
@@ -22,13 +19,29 @@ class PlayerComponent extends SpriteComponent with HasGameRef, CollisionCallback
 
   Vector2 direction = Vector2.zero(); //Vector to modify direction of movement
 
+  //Refrence to the BLOC for game state management
   late GameBloc gameBloc;
 
-  PlayerComponent({required this.gameBloc}) : super();
+  PlayerComponent({required this.gameBloc, required this.currentState}) : super();
 
+  PlayerState currentState;
+  
+  /// Sprites
+  
   late Sprite idleSprite;
   late Sprite movingLeftSprite;
   late Sprite movingRightSprite;
+
+  /// 
+
+
+  /// Effect variables
+  
+  double duration = 0.1;
+  double reverseDuration = 0.1;
+  int repeat = 3;
+
+  ///
 
   @override
   Future<void> onLoad() async {
@@ -47,6 +60,13 @@ class PlayerComponent extends SpriteComponent with HasGameRef, CollisionCallback
     add(CircleHitbox());
 
     add(bulletCreator = TimerComponent(period: 0.2, repeat: true, autoStart: false, onTick: shootBullet));
+  }
+
+  void changeState(PlayerState newPlayerState)
+  {
+    currentState.exit(this);
+    currentState = newPlayerState;
+    currentState.enter(this);
   }
 
   void shootBullet()
@@ -69,13 +89,16 @@ class PlayerComponent extends SpriteComponent with HasGameRef, CollisionCallback
   @override
   void update(double dt) {
     super.update(dt);
-    position += direction * dt * speed; 
-    for (final bullet in game.children.whereType<BulletComponent>().toList()) {
-      if (bullet.position.y < 0 || bullet.position.y > game.size.y) {
-        BulletPool.intance.releaseBullet(bullet);
-        game.remove(bullet);
-      }
-    }
+    currentState.update(this, dt);
+
+    //The following code has been moved to player state - PlayingState
+    // position += direction * dt * speed; 
+    // for (final bullet in game.children.whereType<BulletComponent>().toList()) {
+    //   if (bullet.position.y < 0 || bullet.position.y > game.size.y) {
+    //     BulletPool.intance.releaseBullet(bullet);
+    //     game.remove(bullet);
+    //   }
+    // }
   }
 
   //Moving with A/D event
@@ -115,12 +138,14 @@ class PlayerComponent extends SpriteComponent with HasGameRef, CollisionCallback
 
   @override
   void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other) {
-    // TODO: implement onCollisionStart
+
     super.onCollisionStart(intersectionPoints, other);
     if(other is EnemyComponent)
     {
       other.takeHit();
       addHitEffect();
+
+
       gameBloc.add(LoseALifeEvent());
       if(gameBloc.nrOfLifes <= 0)
       {
@@ -131,7 +156,9 @@ class PlayerComponent extends SpriteComponent with HasGameRef, CollisionCallback
 
   void addHitEffect()
   {
-    final colorEffect = ColorEffect(Colors.red, EffectController(duration: 0.1, reverseDuration: 0.1, repeatCount: 3));
+    final colorEffect = ColorEffect(Colors.red, EffectController(duration: duration, reverseDuration: reverseDuration, repeatCount: repeat));
     add(colorEffect);
+    
+    changeState(HitState(timeAsHit: (duration + reverseDuration) * repeat));
   }
 }

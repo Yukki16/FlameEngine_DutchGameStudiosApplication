@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:js_interop_unsafe';
-import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
@@ -11,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:space_invaders/bloc/game_bloc.dart';
 import 'package:space_invaders/components/enemy_spawner.dart';
 import 'package:space_invaders/components/player_component.dart';
+import 'package:space_invaders/components/player_states.dart';
 
 class SpaceInvadersGame extends FlameGame
     with KeyboardEvents, PanDetector, HasCollisionDetection {
@@ -85,7 +84,7 @@ class SpaceInvadersGame extends FlameGame
 
   void gameRestarted() async {
     //print('I get invoked');
-    await add(player = PlayerComponent(gameBloc: _gameBloc));
+    await add(player = PlayerComponent(gameBloc: _gameBloc, currentState: PlayingState()));
     await add(spawner = EnemySpawner(gameBloc: _gameBloc));
     _gameBloc.add(StartGameEvent());
     if (finalMessageAdded) // I should make a list of game objects that are added to the game, but this is a faster solution
@@ -124,21 +123,21 @@ class SpaceInvadersGame extends FlameGame
 
   @override
   void onPanStart(_) {
-    if (_gameBloc.state.status == GameStatus.playing) {
+    if (_gameBloc.state.status == GameStatus.playing && player.currentState is PlayingState) {
       player.beginShooting();
     }
   }
 
   @override
   void onPanEnd(_) {
-    if (_gameBloc.state.status == GameStatus.playing) {
+    if (_gameBloc.state.status == GameStatus.playing && player.currentState is PlayingState) {
       player.stopShooting();
     }
   }
 
   @override
   void onPanCancel() {
-    if (_gameBloc.state.status == GameStatus.playing) {
+    if (_gameBloc.state.status == GameStatus.playing && player.currentState is PlayingState) {
       player.stopShooting();
     }
   }
